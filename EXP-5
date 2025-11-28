@@ -1,0 +1,35 @@
+#include <stdio.h>
+
+int main() {
+    int n, i, p[10], pr[10], highest, index;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    for(i = 0; i < n; i++) {
+        printf("Enter process ID and priority: ");
+        scanf("%d %d", &p[i], &pr[i]);
+    }
+
+    highest = pr[0];
+    index = 0;
+
+    for(i = 1; i < n; i++) {
+        if(pr[i] < highest) {
+            highest = pr[i];
+            index = i;
+        }
+    }
+
+    printf("\nProcess with highest priority: P%d (Priority %d)\n", p[index], pr[index]);
+
+    return 0;
+}
+
+
+Output
+Enter number of processes: 2
+Enter process ID and priority: 2 1
+Enter process ID and priority: 3 4
+
+Process with highest priority: P2 (Priority 1)
