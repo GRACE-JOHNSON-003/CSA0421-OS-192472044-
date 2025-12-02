@@ -1,0 +1,59 @@
+#include <stdio.h>
+int main() {
+    int n, quantum, time = 0, done, i;
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+    int bt[n], rem[n], wt[n], tat[n];
+    float avgWT = 0, avgTAT = 0;
+    printf("Enter burst time of each process:\n");
+    for (i = 0; i < n; i++) {
+        printf("P%d: ", i+1);
+        scanf("%d", &bt[i]);
+        rem[i] = bt[i];
+    }
+    printf("Enter time quantum: ");
+    scanf("%d", &quantum);
+    do {
+        done = 1;
+        for (i = 0; i < n; i++) {
+            if (rem[i] > 0) {
+                done = 0;
+                if (rem[i] > quantum) {
+                    time += quantum;
+                    rem[i] -= quantum;
+                } else {
+                    time += rem[i];
+                    wt[i] = time - bt[i];
+                    rem[i] = 0;
+                }
+            }
+        }
+    } while (!done);
+    for (i = 0; i < n; i++) {
+        tat[i] = bt[i] + wt[i];
+        avgWT += wt[i];
+        avgTAT += tat[i];
+    }
+    printf("\nProcess  BT  WT  TAT\n");
+    for (i = 0; i < n; i++)
+        printf("P%d\t%d\t%d\t%d\n", i+1, bt[i], wt[i], tat[i]);
+
+    printf("\nAverage Waiting Time = %.2f", avgWT/n);
+    printf("\nAverage Turnaround Time = %.2f\n", avgTAT/n);
+    return 0;
+}
+
+Output
+
+Enter number of processes: 2
+Enter burst time of each process:
+P1: 10
+P2: 5
+Enter time quantum: 2
+
+Process  BT  WT  TAT
+P1	10	5	15
+P2	5	6	11
+
+Average Waiting Time = 5.50
+Average Turnaround Time = 13.00
