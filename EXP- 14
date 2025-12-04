@@ -1,0 +1,77 @@
+#include <stdio.h>
+#define MAX 50
+
+int main() {
+    int pages[MAX], frame[MAX], time[MAX];
+    int n, f, i, j, k, pos, faults = 0, count = 0, min;
+
+    printf("Enter number of pages: ");
+    scanf("%d", &n);
+
+    printf("Enter page reference string: ");
+    for (i = 0; i < n; i++)
+        scanf("%d", &pages[i]);
+
+    printf("Enter number of frames: ");
+    scanf("%d", &f);
+
+    for (i = 0; i < f; i++) {
+        frame[i] = -1;
+        time[i] = 0;
+    }
+
+    printf("\nPage\tFrames\n");
+    
+    for (i = 0; i < n; i++) {
+        int page = pages[i];
+        int hit = 0;
+
+        for (j = 0; j < f; j++) {
+            if (frame[j] == page) {
+                hit = 1;
+                time[j] = ++count;
+            }
+        }
+
+        if (!hit) {
+            faults++;
+
+            if (i < f) {
+                frame[i] = page;
+                time[i] = ++count;
+            } else {
+                min = time[0];
+                pos = 0;
+
+                for (k = 1; k < f; k++) {
+                    if (time[k] < min) {
+                        min = time[k];
+                        pos = k;
+                    }
+                }
+
+                frame[pos] = page;
+                time[pos] = ++count;
+            }
+        }
+
+        printf("%d\t", page);
+        for (k = 0; k < f; k++)
+            frame[k] == -1 ? printf("- ") : printf("%d ", frame[k]);
+        printf("\n");
+    }
+
+    printf("\nTotal Page Faults = %d\n", faults);
+    return 0;
+}
+
+output:
+Enter number of pages: 3
+Enter page reference string: 4 8 9
+Enter number of frames: 2
+Page	Frames
+4	4 - 
+8	4 8 
+9	9 8 
+
+Total Page Faults = 3
