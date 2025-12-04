@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <pthread.h>
+
+void* myThread(void* arg) {
+    printf("Inside thread function\n");
+    pthread_exit(NULL);   // (iv) exit
+}
+
+int main() {
+    pthread_t t1, t2;
+
+    // (i) create
+    pthread_create(&t1, NULL, myThread, NULL);
+    pthread_create(&t2, NULL, myThread, NULL);
+
+    // (iii) equal
+    if (pthread_equal(t1, t2))
+        printf("Both thread IDs are equal\n");
+    else
+        printf("Thread IDs are NOT equal\n");
+
+    // (ii) join
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf("Main thread finished\n");
+    return 0;
+}
+
+Output
+Inside thread function
+Inside thread function
+Thread IDs are NOT equal
+Main thread finished
