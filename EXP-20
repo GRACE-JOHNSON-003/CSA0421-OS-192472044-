@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <string.h>
+
+struct SubDir {
+    char name[20];
+    char files[10][20];
+    int fcount;
+};
+
+int main() {
+    struct SubDir dir[2];
+
+    // First user directory
+    strcpy(dir[0].name, "user1");
+    dir[0].fcount = 0;
+    strcpy(dir[0].files[dir[0].fcount++], "a.txt");
+    strcpy(dir[0].files[dir[0].fcount++], "b.txt");
+
+    // Second user directory
+    strcpy(dir[1].name, "user2");
+    dir[1].fcount = 0;
+    strcpy(dir[1].files[dir[1].fcount++], "c.txt");
+    strcpy(dir[1].files[dir[1].fcount++], "d.txt");
+
+    // Display two-level directory
+    for (int i = 0; i < 2; i++) {
+        printf("Directory: %s\n", dir[i].name);
+        for (int j = 0; j < dir[i].fcount; j++) {
+            printf("  %s\n", dir[i].files[j]);
+        }
+    }
+
+    return 0;
+}
+
+
+OUTPUT
+Directory: user1
+  a.txt
+  b.txt
+Directory: user2
+  c.txt
+  d.txt
