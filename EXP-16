@@ -1,0 +1,38 @@
+#include <stdio.h>
+
+int main() {
+    int blocks[] = {100, 500, 200, 300, 600};
+    int n = 5;
+
+    int processes[] = {212, 417, 112, 426};
+    int m = 4;
+
+    printf("First Fit Allocation:\n");
+
+    for(int i = 0; i < m; i++) {
+        int allocated = -1;
+
+        for(int j = 0; j < n; j++) {
+            if(blocks[j] >= processes[i]) {
+                allocated = j;
+                blocks[j] -= processes[i];
+                break;
+            }
+        }
+
+        if(allocated != -1)
+            printf("Process %d (%d KB) -> Block %d\n", i+1, processes[i], allocated+1);
+        else
+            printf("Process %d (%d KB) -> Not Allocated\n", i+1, processes[i]);
+    }
+
+    return 0;
+}
+
+OUTPUT
+First Fit Allocation:
+Process 1 (212 KB) -> Block 2
+Process 2 (417 KB) -> Block 5
+Process 3 (112 KB) -> Block 2
+Process 4 (426 KB) -> Not Allocated
+
