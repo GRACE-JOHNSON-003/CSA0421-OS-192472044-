@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 20
+
+struct Directory {
+    char files[MAX][20];
+    int count;
+};
+
+int main() {
+    struct Directory dir;
+    dir.count = 0;
+
+    int choice;
+    char name[20];
+
+    while (1) {
+        printf("\n1. Add File\n2. Search File\n3. List Files\n4. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                if (dir.count < MAX) {
+                    printf("Enter file name: ");
+                    scanf("%s", dir.files[dir.count]);
+                    dir.count++;
+                    printf("File added.\n");
+                } else {
+                    printf("Directory full.\n");
+                }
+                break;
+
+            case 2:
+                printf("Enter file name to search: ");
+                scanf("%s", name);
+                int found = 0;
+                for (int i = 0; i < dir.count; i++) {
+                    if (strcmp(dir.files[i], name) == 0) {
+                        printf("File found.\n");
+                        found = 1;
+                        break;
+                    }
+                }
+                if (!found) printf("File not found.\n");
+                break;
+
+            case 3:
+                printf("\nFiles in directory:\n");
+                for (int i = 0; i < dir.count; i++) {
+                    printf("%s\n", dir.files[i]);
+                }
+                break;
+
+            case 4:
+                return 0;
+
+            default:
+                printf("Invalid choice.\n");
+        }
+    }
+}
+
+OUTPUT
+
+1. Add File
+2. Search File
+3. List Files
+4. Exit
+Enter choice: 1
+Enter file name: QWEDFGHJM
+File added.
+
+1. Add File
+2. Search File
+3. List Files
+4. Exit
+Enter choice: 2
+Enter file name to search: QWEDFGHJM
+File found.
