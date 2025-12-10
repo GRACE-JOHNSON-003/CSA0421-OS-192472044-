@@ -1,0 +1,93 @@
+#include <stdio.h>
+
+int main() {
+    int n, frames, i, j, k;
+    int pages[50], frame[10], counter[10];
+    int pageFaults = 0;
+
+    printf("Enter number of pages: ");
+    scanf("%d", &n);
+
+    printf("Enter the page reference string:\n");
+    for (i = 0; i < n; i++)
+        scanf("%d", &pages[i]);
+
+    printf("Enter number of frames: ");
+    scanf("%d", &frames);
+
+    for (i = 0; i < frames; i++) {
+        frame[i] = -1;    
+        counter[i] = 0;   
+    }
+
+    printf("\nPage\tFrames\n");
+
+    for (i = 0; i < n; i++) {
+        int page = pages[i];
+        int flag = 0;
+
+        
+        for (j = 0; j < frames; j++) {
+            if (frame[j] == page) {
+                flag = 1; 
+                counter[j] = 0; 
+            } else if (frame[j] != -1) {
+                counter[j]++; 
+            }
+        }
+
+        if (!flag) {
+            
+            int max = -1, pos = 0;
+            for (j = 0; j < frames; j++) {
+                if (counter[j] > max) {
+                    max = counter[j];
+                    pos = j;
+                }
+            }
+            frame[pos] = page;
+            counter[pos] = 0; 
+            for (j = 0; j < frames; j++) {
+                if (j != pos && frame[j] != -1) {
+                    counter[j]++;
+                }
+            }
+            pageFaults++;
+        }
+
+        
+        printf("%d\t", page);
+        for (k = 0; k < frames; k++) {
+            if (frame[k] != -1)
+                printf("%d ", frame[k]);
+            else
+                printf("- ");
+        }
+        printf("\n");
+    }
+
+    printf("\nTotal Page Faults = %d\n", pageFaults);
+
+    return 0;
+}
+output:
+Enter number of pages: 12
+Enter the page reference string:
+1 2 3 4 1 2 5 1 2 3 4 5
+Enter number of frames: 3
+
+Page    Frames
+1       1 - - 
+2       1 2 - 
+3       1 2 3 
+4       4 2 3 
+1       4 1 3 
+2       4 1 2 
+5       5 1 2 
+1       5 1 2 
+2       5 1 2 
+3       3 1 2 
+4       3 4 2 
+5       3 4 5 
+
+Total Page Faults = 
