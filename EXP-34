@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_RECORDS 100
+#define RECORD_SIZE 50
+
+typedef struct {
+    int id;
+    char data[RECORD_SIZE];
+} Record;
+
+typedef struct {
+    Record records[MAX_RECORDS];
+    int recordCount;
+} File;
+
+void createFile(File *file) {
+    int n;
+    printf("Enter number of records to create: ");
+    scanf("%d", &n);
+    file->recordCount = n;
+
+    for (int i = 0; i < n; i++) {
+        printf("Enter data for record %d: ", i + 1);
+        scanf(" %[^\n]", file->records[i].data);
+        file->records[i].id = i + 1;
+    }
+
+    printf("File created with %d records.\n", n);
+}
+
+void displayFile(File file) {
+    printf("\nDisplaying file contents sequentially:\n");
+    for (int i = 0; i < file.recordCount; i++) {
+        printf("Record %d: %s\n", file.records[i].id, file.records[i].data);
+    }
+}
+
+void accessRecordSequentially(File file) {
+    int recordToAccess;
+    printf("\nEnter the record number to access (1 to %d): ", file.recordCount);
+    scanf("%d", &recordToAccess);
+
+    if (recordToAccess < 1 || recordToAccess > file.recordCount) {
+        printf("Invalid record number!\n");
+        return;
+    }
+
+    printf("Reading records sequentially up to record %d:\n", recordToAccess);
+    for (int i = 0; i < recordToAccess; i++) {
+        printf("Record %d: %s\n", file.records[i].id, file.records[i].data);
+    }
+}
+
+int main() {
+    File file;
+    file.recordCount = 0;
+
+    int choice;
+    do {
+        printf("\nSequential File Allocation Menu:\n");
+        printf("1. Create File\n");
+        printf("2. Display File\n");
+        printf("3. Access Record Sequentially\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                createFile(&file);
+                break;
+            case 2:
+                displayFile(file);
+                break;
+            case 3:
+                accessRecordSequentially(file);
+                break;
+            case 4:
+                printf("Exiting program.\n");
+                break;
+            default:
+                printf("Invalid choice. Try again.\n");
+        }
+
+    } while (choice != 4);
+
+    return 0;
+}
+output:
+Sequential File Allocation Menu:
+1. Create File
+2. Display File
+3. Access Record Sequentially
+4. Exit
+Enter your choice: 1
+Enter number of records to create: 3
+Enter data for record 1: Alice
+Enter data for record 2: Bob
+Enter data for record 3: Carol
+File created with 3 records.
+
+Enter your choice: 3
+Enter the record number to access (1 to 3): 2
+Reading records sequentially up to record 2:
+Record 1: Alice
+Record 2: Bob
