@@ -1,0 +1,146 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_BLOCKS 100
+
+typedef struct Block {
+    int blockNumber;
+    struct Block* next;
+} Block;
+
+typedef struct {
+    Block* start;
+    Block* end;
+    int size;
+} File;
+
+int freeBlocks[MAX_BLOCKS]; 
+
+Block* allocateBlock(int blockNumber) {
+    Block* newBlock = (Block*)malloc(sizeof(Block));
+    newBlock->blockNumber = blockNumber;
+    newBlock->next = NULL;
+    return newBlock;
+}
+
+void allocateFile(File* file, int totalSize) {
+    int blocksNeeded;
+    printf("Enter number of blocks needed: ");
+    scanf("%d", &blocksNeeded);
+
+    file->start = NULL;
+    file->end = NULL;
+    file->size = 0;
+
+    for (int i = 0; i < blocksNeeded; i++) {
+        int allocated = 0;
+        for (int j = 0; j < totalSize; j++) {
+            if (freeBlocks[j] == 0) {
+                freeBlocks[j] = 1;
+                Block* newBlock = allocateBlock(j);
+
+                if (file->start == NULL) {
+                    file->start = file->end = newBlock;
+                } else {
+                    file->end->next = newBlock;
+                    file->end = newBlock;
+                }
+
+                file->size++;
+                allocated = 1;
+                break;
+            }
+        }
+        if (!allocated) {
+            printf("Insufficient free blocks. Releasing allocated blocks...\n");
+
+
+            Block* current = file->start;
+            while (current != NULL) {
+                freeBlocks[current->blockNumber] = 0;
+                Block* temp = current;
+                current = current->next;
+                free(temp);
+            }
+
+            file->start = file->end = NULL;
+            file->size = 0;
+            return;
+        }
+    }
+
+    printf("File allocated successfully with %d blocks.\n", file->size);
+}
+
+void displayFile(File file) {
+    if (file.start == NULL) {
+        printf("No file allocated.\n");
+        return;
+    }
+
+    printf("\nFile blocks (linked list):\n");
+    Block* current = file.start;
+    while (current != NULL) {
+        printf("Block %d -> ", current->blockNumber);
+        current = current->next;
+    }
+    printf("NULL\n");
+
+    printf("Start block: %d\n", file.start->blockNumber);
+    printf("End block: %d\n", file.end->blockNumber);
+}
+
+int main() {
+    File file = {NULL, NULL, 0};
+    for (int i = 0; i < MAX_BLOCKS; i++)
+        freeBlocks[i] = 0;
+
+    int choice;
+    do {
+        printf("\nLinked File Allocation Menu:\n");
+        printf("1. Allocate File\n");
+        printf("2. Display File\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                allocateFile(&file, MAX_BLOCKS);
+                break;
+            case 2:
+                displayFile(file);
+                break;
+            case 3:
+                printf("Exiting program.\n");
+                break;
+            default:
+                printf("Invalid choice. Try again.\n");
+        }
+
+    } while (choice != 3);
+
+
+    Block* current = file.start;
+    while (current != NULL) {
+        Block* temp = current;
+        current = current->next;
+        free(temp);
+    }
+
+    return 0;
+}
+output:
+Linked File Allocation Menu:
+1. Allocate File
+2. Display File
+3. Exit
+Enter your choice: 1
+Enter number of blocks needed: 4
+File allocated successfully with 4 blocks.
+
+Enter your choice: 2
+File blocks (linked list):
+Block 0 -> Block 1 -> Block 2 -> Block 3 -> NULL
+Start block: 0
+End block: 3
