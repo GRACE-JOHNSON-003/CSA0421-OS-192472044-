@@ -1,0 +1,122 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_BLOCKS 100
+#define MAX_INDEX_SIZE 20
+
+typedef struct {
+    int indexBlock;
+    int dataBlocks[MAX_INDEX_SIZE];
+    int blockCount;
+} File;
+
+void allocateFile(File *file, int totalBlocks[], int totalSize) {
+    int i, block;
+
+    printf("Enter number of blocks needed for the file (max %d): ", MAX_INDEX_SIZE);
+    scanf("%d", &file->blockCount);
+
+    for (i = 0; i < totalSize; i++) {
+        if (totalBlocks[i] == 0) {
+            file->indexBlock = i;
+            totalBlocks[i] = 1;
+            break;
+        }
+    }
+
+    if (i == totalSize) {
+        printf("No free block available for index block.\n");
+        return;
+    }
+
+    printf("Index block allocated at %d\n", file->indexBlock);
+
+
+    int allocated = 0;
+    for (i = 0; i < totalSize && allocated < file->blockCount; i++) {
+        if (totalBlocks[i] == 0) {
+            totalBlocks[i] = 1;
+            file->dataBlocks[allocated] = i;
+            allocated++;
+        }
+    }
+
+    if (allocated < file->blockCount) {
+        printf("Insufficient blocks for file data. Releasing allocated blocks...\n");
+        totalBlocks[file->indexBlock] = 0;
+        for (int j = 0; j < allocated; j++)
+            totalBlocks[file->dataBlocks[j]] = 0;
+        file->blockCount = 0;
+        return;
+    }
+
+    printf("File allocation successful.\nData blocks allocated: ");
+    for (i = 0; i < file->blockCount; i++)
+        printf("%d ", file->dataBlocks[i]);
+    printf("\n");
+}
+
+void displayFile(File file) {
+    if (file.blockCount == 0) {
+        printf("No file allocated.\n");
+        return;
+    }
+
+    printf("\nIndex Block: %d\n", file.indexBlock);
+    printf("Data Blocks:\n");
+    for (int i = 0; i < file.blockCount; i++) {
+        printf("Index[%d] -> Block %d\n", i, file.dataBlocks[i]);
+    }
+}
+
+int main() {
+    int totalBlocks[MAX_BLOCKS] = {0};  
+    File file = { .blockCount = 0 };
+
+    int choice;
+    do {
+        printf("\nIndexed File Allocation Menu:\n");
+        printf("1. Allocate File\n");
+        printf("2. Display File\n");
+        printf("3. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                allocateFile(&file, totalBlocks, MAX_BLOCKS);
+                break;
+            case 2:
+                displayFile(file);
+                break;
+            case 3:
+                printf("Exiting.\n");
+                break;
+            default:
+                printf("Invalid option.\n");
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}
+output:
+Indexed File Allocation Menu:
+1. Allocate File
+2. Display File
+3. Exit
+Enter choice: 1
+Enter number of blocks needed for the file (max 20): 5
+Index block allocated at 0
+File allocation successful.
+Data blocks allocated: 1 2 3 4 5
+
+Indexed File Allocation Menu:
+2
+Index Block: 0
+Data Blocks:
+Index[0] -> Block 1
+Index[1] -> Block 2
+Index[2] -> Block 3
+Index[3] -> Block 4
+Index[4] -> Block 5
