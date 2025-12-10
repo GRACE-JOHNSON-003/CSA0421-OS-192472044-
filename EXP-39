@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void sort(int arr[], int n) {
+  
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - i - 1; j++)
+            if (arr[j] > arr[j + 1])
+                arr[j] ^= arr[j + 1] ^= arr[j] ^= arr[j + 1];
+}
+
+void cscanAlgorithm(int requests[], int n, int head, int diskSize) {
+    int totalSeekTime = 0;
+    int i;
+
+    int left[n], right[n], leftCount = 0, rightCount = 0;
+
+    for (i = 0; i < n; i++) {
+        if (requests[i] >= head)
+            right[rightCount++] = requests[i];
+        else
+            left[leftCount++] = requests[i];
+    }
+
+    sort(left, leftCount);
+    sort(right, rightCount);
+
+    printf("\nSeek Sequence:\n%d", head);
+
+ 
+    for (i = 0; i < rightCount; i++) {
+        totalSeekTime += abs(head - right[i]);
+        head = right[i];
+        printf(" -> %d", head);
+    }
+
+    if (head != diskSize - 1) {
+        totalSeekTime += abs(head - (diskSize - 1));
+        head = diskSize - 1;
+    }
+
+    
+    totalSeekTime += (diskSize - 1); 
+    head = 0;
+
+
+    for (i = 0; i < leftCount; i++) {
+        totalSeekTime += abs(head - left[i]);
+        head = left[i];
+        printf(" -> %d", head);
+    }
+
+    printf("\n\nTotal Seek Time: %d\n", totalSeekTime);
+    printf("Average Seek Time: %.2f\n", (float)totalSeekTime / n);
+}
+
+int main() {
+    int n, diskSize, head;
+    printf("Enter number of disk I/O requests: ");
+    scanf("%d", &n);
+
+    int requests[n];
+    printf("Enter the I/O requests (cylinder numbers):\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &requests[i]);
+
+    printf("Enter total number of cylinders (disk size): ");
+    scanf("%d", &diskSize);
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    cscanAlgorithm(requests, n, head, diskSize);
+
+    return 0;
+}
+output:
+Enter number of disk I/O requests: 6
+Enter the I/O requests (cylinder numbers):
+98 183 37 122 14 124
+Enter total number of cylinders (disk size): 200
+Enter initial head position: 53
+
+Seek Sequence:
+53 -> 98 -> 122 -> 124 -> 183 -> 199 -> 14 -> 37
+
+Total Seek Time: 382
+Average Seek Time: 63.67
