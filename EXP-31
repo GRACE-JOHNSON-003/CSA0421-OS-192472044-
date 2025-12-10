@@ -1,0 +1,64 @@
+#include <stdio.h>
+
+int main() {
+    int n, frames, i, j, k, pageFaults = 0, pointer = 0;
+    int pages[50], frame[10];
+
+    printf("Enter number of pages: ");
+    scanf("%d", &n);
+
+    printf("Enter the page reference string:\n");
+    for (i = 0; i < n; i++)
+        scanf("%d", &pages[i]);
+
+    printf("Enter number of frames: ");
+    scanf("%d", &frames);
+
+   
+    for (i = 0; i < frames; i++)
+        frame[i] = -1;
+
+    printf("\nPage\tFrames\n");
+    for (i = 0; i < n; i++) {
+        int flag = 0;
+
+
+        for (j = 0; j < frames; j++) {
+            if (frame[j] == pages[i]) {
+                flag = 1; 
+                break;
+            }
+        }
+
+        if (flag == 0) {
+    
+            frame[pointer] = pages[i];
+            pointer = (pointer + 1) % frames;
+            pageFaults++;
+        }
+
+
+        printf("%d\t", pages[i]);
+        for (k = 0; k < frames; k++) {
+            if (frame[k] != -1)
+                printf("%d ", frame[k]);
+            else
+                printf("- ");
+        }
+        printf("\n");
+    }
+
+    printf("\nTotal Page Faults = %d\n", pageFaults);
+
+    return 0;
+}
+output:
+Enter number of pages: 1
+Enter the page reference string:
+14
+Enter number of frames: 4
+
+Page	Frames
+14	14 - - - 
+
+Total Page Faults = 1
