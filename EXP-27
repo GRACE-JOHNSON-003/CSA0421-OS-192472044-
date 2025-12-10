@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <dirent.h>
+
+int main() {
+    struct dirent *de;
+    DIR *dr = opendir(".");
+
+    if (dr == NULL) {
+        perror("Could not open current directory");
+        return 1;
+    }
+
+    printf("Contents of current directory:\n\n");
+
+    while ((de = readdir(dr)) != NULL) {
+      
+        if (de->d_name[0] != '.')
+            printf("%s\n", de->d_name);
+    }
+
+    closedir(dr);
+    return 0;
+}
+output:
+Contents of current directory:
+
+file1.txt
+program.c
+output.txt
+main
