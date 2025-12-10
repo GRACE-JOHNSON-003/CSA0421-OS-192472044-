@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+
+void* threadFunc(void* arg) {
+    printf("Thread started: ID = %lu\n", pthread_self());
+    sleep(1); 
+
+    if ((unsigned long)pthread_self() % 2 == 0) {
+        printf("Thread %lu exiting normally.\n", pthread_self());
+        pthread_exit((void*)1);  
+    } else {
+        printf("Thread %lu exiting normally.\n", pthread_self());
+        return (void*)2;         
+    }
+}
+
+int main() {
+    pthread_t thread1, thread2;
+    void* retval1;
+    void* retval2;
+
+
+    if (pthread_create(&thread1, NULL, threadFunc, NULL) != 0) {
+        perror("Failed to create thread1");
+        return 1;
+    }
+    if (pthread_create(&thread2, NULL, threadFunc, NULL) != 0) {
+        perror("Failed to create thread2");
+        return 1;
+    }
+
+
+    if (pthread_equal(thread1, thread2)) {
+        printf("Threads are equal (same thread).\n");
+    } else {
+        printf("Threads are NOT equal (different threads).\n");
+    }
+
+    
+    pthread_join(thread1, &retval1);
+    printf("Thread1 joined with return value: %ld\n", (long)retval1);
+
+    pthread_join(thread2, &retval2);
+    printf("Thread2 joined with return value: %ld\n", (long)retval2);
+
+    printf("Main thread exiting.\n");
+    return 0;
+}
+output:
+Thread started: ID = 133643167962816
+Threads are NOT equal (different threads).
+Thread started: ID = 133643159570112
+Thread 133643159570112 exiting normally.
+Thread 133643167962816 exiting normally.
+Thread1 joined with return value: 1
+Thread2 joined with return value: 1
+Main thread exi
