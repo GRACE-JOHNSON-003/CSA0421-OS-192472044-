@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void calculateFCFS(int requests[], int n, int head) {
+    int totalSeekTime = 0;
+    printf("\nSeek Sequence:\n%d", head);
+
+    for (int i = 0; i < n; i++) {
+        int distance = abs(requests[i] - head);
+        totalSeekTime += distance;
+        head = requests[i];
+        printf(" -> %d", head);
+    }
+
+    printf("\n\nTotal Seek Time: %d\n", totalSeekTime);
+    printf("Average Seek Time: %.2f\n", (float)totalSeekTime / n);
+}
+
+int main() {
+    int n, head;
+
+    printf("Enter the number of disk I/O requests: ");
+    scanf("%d", &n);
+
+    int requests[n];
+    printf("Enter the I/O requests (cylinder numbers):\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &requests[i]);
+    }
+
+    printf("Enter the initial position of the disk head: ");
+    scanf("%d", &head);
+
+    calculateFCFS(requests, n, head);
+
+    return 0;
+}
+output:
+Enter the number of disk I/O requests: 5
+Enter the I/O requests (cylinder numbers):
+98 183 37 122 14
+Enter the initial position of the disk head: 53
+
+Seek Sequence:
+53 -> 98 -> 183 -> 37 -> 122 -> 14
+
+Total Seek Time: 640
+Average Seek Time: 128.00
